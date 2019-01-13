@@ -55,10 +55,8 @@ class ValidateOTP(CreateAPIView):
             otp = request.data.get("otp")
             try:
                 user = authenticate(request, pk=pk, otp=otp)
-                if user:
-                    last_login = user.last_login
                 login(request, user)
-                response = user_detail(user, last_login)
+                response = user_detail(user)
                 return Response(response, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response(

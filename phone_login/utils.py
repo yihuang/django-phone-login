@@ -31,19 +31,14 @@ def success(message=None):
     return (STATUS, STATUS["status"])
 
 
-def user_detail(user, last_login):
-    try:
-        token = user.auth_token.key
-    except:
-        token = Token.objects.create(user=user)
-        token = token.key
-    user_json = {
+def user_detail(user):
+    return {
         "id": user.pk,
-        "last_login": last_login,
-        "token": token,
-        "status": status.HTTP_200_OK
+        "last_login": user.last_login,
+        'phone_number': str(user.phone_number),
+        'nonce': user.nonce,
+        'token': user.token,
     }
-    return user_json
 
 
 def model_field_attr(model, model_field, attr):
