@@ -7,11 +7,15 @@ import os
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 from sendsms.message import SmsMessage
+
+
+USER_MODEL = get_user_model()
 
 
 class PhoneNumberUserManager(BaseUserManager):
@@ -113,3 +117,9 @@ class PhoneToken(models.Model):
         m.update(os.urandom(16))
         otp = str(int(m.hexdigest(), 16))[-length:]
         return otp
+
+
+class UserBinding(models.Model):
+    game_user = models.IntegerField(unique=True)
+    user = models.ForeignKey(USER_MODEL, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now=True)

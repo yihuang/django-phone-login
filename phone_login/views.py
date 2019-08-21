@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 
-from .models import PhoneToken
+from .models import PhoneToken, UserBinding
 from .serializers import (
     PhoneTokenCreateSerializer, PhoneTokenValidateSerializer
 )
@@ -53,10 +53,19 @@ class ValidateOTP(CreateAPIView):
         if ser.is_valid():
             pk = request.data.get("pk")
             otp = request.data.get("otp")
+            extra = request.data.get('extra')
             try:
                 user = authenticate(request, pk=pk, otp=otp)
                 login(request, user)
                 response = user_detail(user)
+                if extra:
+                    binding, created = UserBinding.objects.get_or_create(
+                        game_user=extra,
+                        user=user
+                    )
+                    if not created:
+                        binding.user = user
+                        binding.save()
                 return Response(response, status=status.HTTP_200_OK)
             except ObjectDoesNotExist:
                 return Response(

@@ -26,7 +26,8 @@ class PhoneTokenUser(ModelSerializer):
 class PhoneTokenValidateSerializer(ModelSerializer):
     pk = serializers.IntegerField()
     otp = serializers.CharField(max_length=40)
+    extra = serializers.IntegerField(required=False)
 
     class Meta:
         model = PhoneToken
-        fields = ('pk', 'otp')
+        fields = ('pk', 'otp', 'extra')
