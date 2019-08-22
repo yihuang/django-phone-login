@@ -61,7 +61,7 @@ class ValidateOTP(CreateAPIView):
                 if extra:
                     binding, created = UserBinding.objects.get_or_create(
                         game_user=extra,
-                        user=user
+                        defaults={'user': user}
                     )
                     if not created:
                         binding.user = user
